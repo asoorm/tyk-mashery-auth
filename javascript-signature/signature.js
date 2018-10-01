@@ -25,11 +25,12 @@
   2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,
   2756734187,3204031479,3329325298];"function"===typeof define&&define.amd?define(function(){return w}):"undefined"!==typeof exports?("undefined"!==typeof module&&module.exports&&(module.exports=w),exports=w):I.jsSHA=w})(this);
 
+var validateSignature = new TykJS.TykMiddleware.NewMiddleware({});
 
-var ALLOWED_CLOCK_SKEW = 20;
-var SHARED_SECRET = "4321knj8fqgm5ffq64tdzifato6fb5p5rkqze933ehivqelctivti8qs0xnzmpq3";
+validateSignature.NewProcessRequest(function(req, sess) {
 
-function validateSignature(req, sess, conf) {
+  var ALLOWED_CLOCK_SKEW = 300; // 5 minutes either side of now
+  var SHARED_SECRET = "4321knj8fqgm5ffq64tdzifato6fb5p5rkqze933ehivqelctivti8qs0xnzmpq3";
 
   var now = Math.round((new Date()).getTime() / 1000);
   var token = req.Headers["Authorization"][0];
@@ -41,29 +42,20 @@ function validateSignature(req, sess, conf) {
   log("token: " + token);
   log("signatureAttempt: " + signature);
 
-  var responseObject = {
-    Body: "Unauthorized",
-    Headers: {},
-    Code: 403
-  };
-
-  var attempts = 0;
   for (var i = now - ALLOWED_CLOCK_SKEW; i <= now + ALLOWED_CLOCK_SKEW; i ++) {
-    attempts ++;
+
     var raw = token + SHARED_SECRET + i;
 
     var shaObj = new jsSHA("SHA-256", "TEXT");
     shaObj.update(raw);
     var hash = shaObj.getHash("HEX");
 
-    log("checking: " + hash + "     " + signature);
-
     if (hash === signature) {
-      responseObject.Body = "YAY!!!";
-      responseObject.Code = 200;
-      break;
+      return preBodyToHeaders.ReturnData(req, sess.meta_data);
     }
   }
 
-  return TykJsResponse(responseObject)
-}
+  req.ReturnOverrides.Code = 403;
+  req.ReturnOverrides.Error = "Unauthorized";
+  return preBodyToHeaders.ReturnData(req, sess.meta_data);
+});

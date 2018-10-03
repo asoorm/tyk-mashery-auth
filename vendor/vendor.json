@@ -1,0 +1,19 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "kQ/NBE3Lp0Oj/H3wEae31MMBA6E=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "f4ee69125072b22721efbe639bd0da9c9d19b8cc",
+			"revisionTime": "2018-02-28T22:01:33Z"
+		},
+		{
+			"checksumSHA1": "/geWuqPwRG9/yIuL1WBxXaU/LRQ=",
+			"path": "github.com/TykTechnologies/tyk-protobuf/bindings/go",
+			"revision": "e92e0d9b1d5d0d8af98b6c9be59f1bbe00404b0c",
+			"revisionTime": "2018-10-02T15:35:17Z"
+		}
+	],
+	"rootPath": "github.com/asoorm/tyk-mashery-auth"
+}

@@ -27,13 +27,13 @@ Usage of tyk-mashery-auth:
         token used for generating debug logs (default "foo")
 ```
 
-Download the src & install:
+1. Download the src & install:
 
 ```bash
 go get -u github.com/asoorm/tyk-mashery-auth
 ```
 
-Examples:
+2. Start the `tyk-mashery-auth` service:
 
 ```bash
 # defaults
@@ -58,7 +58,28 @@ tyk-mashery-auth --skew 600
 tyk-mashery-auth --header_auth Api-Auth --header_signature X-My-Signature
 ```
 
-Configure Tyk API to use the gRPC signature validator as a `pre` plugin:
+3. Modify `tyk.conf` in the gateway to point to the gRPC server and restart the service:
+
+e.g. if server is listening on local unix socket `unix:///tmp/foo.sock`
+```
+"coprocess_options": {
+    "enable_coprocess": true,
+    "coprocess_grpc_server": "unix:///tmp/foo.sock"
+},
+```
+
+e.g. if server is hosted on different machine `tcp://IP:PORT`
+
+```
+"coprocess_options": {
+    "enable_coprocess": true,
+    "coprocess_grpc_server": "tcp://127.0.0.1:9001"
+},
+```
+
+4. Configure Tyk API to use the gRPC signature validator as a `pre` plugin:
+
+This will ensure that the signature is validated prior to the key being checked by the authentication middleware. You could also validate the signature after auth check if you require.
 
 Modify the api definition `custom_middleware.driver` to specify `grpc`
 Modify the api definition `custom_middleware.pre[]` array to include the `ValidateSignature` hook
@@ -76,7 +97,7 @@ Modify the api definition `custom_middleware.pre[]` array to include the `Valida
 }
 ```
 
-Save the API definition and when you send API requests via the gateway, the gateway will pass responsibility for
+5. Save the API definition and when you send API requests via the gateway, the gateway will pass responsibility for
 validating the signature to the `tyk-mashery-auth` plugin.
 
 ```bash

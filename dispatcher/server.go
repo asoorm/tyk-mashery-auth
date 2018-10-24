@@ -21,8 +21,15 @@ func (s Server) Dispatch(ctx context.Context, obj *coprocess.Object) (*coprocess
 	switch obj.HookName {
 	case "ValidateSignature":
 
+		sharedSecret, ok := obj.Session.Metadata["secret"]
+		if !ok {
+			obj.Request.ReturnOverrides.ResponseCode = http.StatusUnauthorized
+			obj.Request.ReturnOverrides.ResponseError = "user session does not contain shared secret meta"
+			return obj, nil
+		}
+
 		validator := hook.Sha256{}
-		validator.Init(s.SharedSecret, s.ClockSkew, s.HeaderAuthKey, s.HeaderSignatureKey)
+		validator.Init(sharedSecret, s.ClockSkew, s.HeaderAuthKey, s.HeaderSignatureKey)
 
 		obj, err := validator.ValidateSignature(obj)
 		if err != nil {

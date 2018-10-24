@@ -30,11 +30,11 @@ const (
 func main() {
 
 	allowedClockSkew := flag.Int64("skew", defaultClockSkew, "allowed clock skew in seconds")
-	sharedSecret := flag.String("secret", defaultSharedSecret, "shared secret")
 	network := flag.String("network", defaultNetwork, "network mode e.g. tcp | unix")
 	listenAddress := flag.String("listen", defaultListenAddress, "listen address e.g. :9000 | /tmp/foo.sock")
 	debug := flag.Bool("debug", defaultDebug, "enable debug mode")
 	debugToken := flag.String("token", defaultDebugToken, "token used for generating debug logs")
+	sharedSecret := flag.String("secret", defaultSharedSecret, "shared secret for debugging")
 	headerAuthKey := flag.String("header_auth", defaultHeaderAuthKey, "header location to look for auth token")
 	headerSignatureKey := flag.String("header_signature", defaultHeaderSignatureKey, "header location to look for signature")
 

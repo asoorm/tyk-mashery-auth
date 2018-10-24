@@ -29,14 +29,14 @@ func (s Sha256) ValidateSignature(obj *coprocess.Object) (*coprocess.Object, err
 
 	log.Info("ValidateSignature called")
 
-	authHeader, ok := obj.Request.Headers["Authorization"]
+	authHeader, ok := obj.Request.Headers[s.headerAuthKey]
 	if !ok {
 		log.Error("authorization header not present")
 
 		return obj, errors.New("auth header not present")
 	}
 
-	xSignature, ok := obj.Request.Headers["X-Signature"]
+	xSignature, ok := obj.Request.Headers[s.headerSignatureKey]
 	if !ok {
 		log.Error("authorization signature not present")
 

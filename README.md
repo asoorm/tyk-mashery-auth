@@ -12,7 +12,7 @@ Usage of tyk-mashery-auth:
   -debug
         enable debug mode
   -header_auth string
-        header location to look for auth token (default "Authorization")
+        header location to look for auth token (default "Api-Key")
   -header_signature string
         header location to look for signature (default "X-Signature")
   -listen string
@@ -55,7 +55,7 @@ tyk-mashery-auth --debug
 tyk-mashery-auth --skew 600
 
 # override the default authorization header key & auth signature header keys
-tyk-mashery-auth --header_auth Api-Auth --header_signature X-My-Signature
+tyk-mashery-auth --header_auth Api-Key --header_signature X-My-Signature
 ```
 
 Configure Tyk API to use the gRPC signature validator as a `pre` plugin:
@@ -66,7 +66,7 @@ Modify the api definition `custom_middleware.pre[]` array to include the `Valida
 ```json
 {
   "custom_middleware": {
-    "pre": [
+    "post_key_auth": [
       {
         "name": "ValidateSignature"
       }
@@ -81,6 +81,6 @@ validating the signature to the `tyk-mashery-auth` plugin.
 
 ```bash
 curl http://localhost:8080/sha/get \
-  -H 'Authorization: foo' \
+  -H 'Api-Key: foo' \
   -H 'X-Signature: e08f7ab275ad200f041d5af0ba6bb51525905899b2bdf1825c9ea5d578ca1161'
 ```

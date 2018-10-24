@@ -23,7 +23,7 @@ const (
 	defaultSharedSecret       = "4321knj8fqgm5ffq64tdzifato6fb5p5rkqze933ehivqelctivti8qs0xnzmpq3"
 	defaultDebug              = false
 	defaultDebugToken         = "foo"
-	defaultHeaderAuthKey      = "Authorization"
+	defaultHeaderAuthKey      = "Api-Key"
 	defaultHeaderSignatureKey = "X-Signature"
 )
 
@@ -93,8 +93,10 @@ func main() {
 
 	s := grpc.NewServer()
 	coprocess.RegisterDispatcherServer(s, &dispatcher.Server{
-		ClockSkew:    *allowedClockSkew,
-		SharedSecret: *sharedSecret,
+		ClockSkew:          *allowedClockSkew,
+		SharedSecret:       *sharedSecret,
+		HeaderAuthKey:      *headerAuthKey,
+		HeaderSignatureKey: *headerSignatureKey,
 	})
 
 	s.Serve(listener)

@@ -27,7 +27,7 @@ func (s *Sha256) Init(sharedSecret string, allowedClockSkew int64, headerAuthKey
 
 func (s Sha256) ValidateSignature(obj *coprocess.Object) (*coprocess.Object, error) {
 
-	log.Info("ValidateSignature called")
+	//log.Info("ValidateSignature called")
 
 	authHeader, ok := obj.Request.Headers[s.headerAuthKey]
 	if !ok {
@@ -60,7 +60,7 @@ func (s Sha256) validate(tokenAttempt string, signatureAttempt string) error {
 	for i := int64(0); i <= s.allowedClockSkew; i++ {
 		attempts++
 		if hex.EncodeToString(s.Sha256Sum(tokenAttempt, now+i)) == signatureAttempt {
-			log.Info("attempts: ", attempts)
+			//log.Info("attempts: ", attempts)
 			return nil
 		}
 
@@ -70,12 +70,12 @@ func (s Sha256) validate(tokenAttempt string, signatureAttempt string) error {
 
 		attempts++
 		if hex.EncodeToString(s.Sha256Sum(tokenAttempt, now-i)) == signatureAttempt {
-			log.Info("attempts: ", attempts)
+			//log.Info("attempts: ", attempts)
 			return nil
 		}
 	}
 
-	log.Info("attempts: ", attempts)
+	//log.Info("attempts: ", attempts)
 	return errors.New("invalid signature" + signatureAttempt)
 }
 
